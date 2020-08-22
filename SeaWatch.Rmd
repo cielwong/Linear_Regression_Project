@@ -1,0 +1,144 @@
+---
+title: "hw"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(readxl)
+data <- read_excel("C:\\Users\\10331\\OneDrive\\Desktop\\SeaWatch C data.xls")
+data2 <- read_excel("C:\\Users\\10331\\OneDrive\\Desktop\\SeaWatch D data.xls")
+```
+
+```{r}
+data[, 3:20] <- sapply(data[, 3:20], as.numeric)
+data <- data[1:20]
+data2[, 6:16] <- sapply(data2[, 6:16], as.numeric)
+```
+
+
+```{r}
+library(regclass)
+str(data)
+```
+```{r}
+summary(data)
+```
+
+```{r}
+library("psych")
+describe(data)
+```
+```{r}
+data$COLLPR <- data$COLLPR * data$POP80
+#data$MFGPR <- data$MFGPR * data$POP80
+#data$POVPR <- data$POVPR * data$POP80
+data$Voter <- data$CART +data$REAG +data$ANDR
+data$CARTpr <- data$CART/data$POP80
+data$REAGpr <- data$REAG/data$POP80
+data$ANDRpr <- data$ANDR/data$POP80
+```
+
+```{r}
+attach(data)
+```
+
+```{r}
+name <- names(data[,3:24])
+c = cor(data[,name],use="complete.obs")
+c
+```
+```{r}
+heatmap(c)
+```
+```{r}
+plot(POP80,GROSS)
+plot(HHMEDI,GROSS)
+plot(PERCAPI,GROSS)
+plot(POVPR,GROSS)
+plot(MFGPR,GROSS)
+plot(COLLPR,GROSS)
+plot(MAGE,GROSS)
+plot(CART,GROSS)
+plot(REAG,GROSS)
+plot(ANDR,GROSS)
+plot(Voter,GROSS)
+plot(CARTpr,GROSS)
+plot(REAGpr,GROSS)
+plot(ANDRpr,GROSS)
+```
+
+```{r}
+model <- lm (GROSS~COLLPR+POVPR+PERCAPI  +POP80 + factor(VISIT))
+summary(model)
+VIF(model)
+```
+```{r}
+data$ERROR <- GROSS - predict(model,data)
+name <- names(data[,3:25])
+c = cor(data[,name],use="complete.obs")
+c
+```
+```{r}
+plot(CARTpr,GROSS)
+plot(REAGpr,GROSS)
+plot(ANDRpr,GROSS)
+plot(CARTpr,POP80)
+plot(REAGpr,POP80)
+plot(ANDRpr,POP80)
+```
+
+
+```{r}
+model2 <- lm (GROSS ~ COLLPR+POVPR+PERCAPI+ CART +REAG + ANDR + factor(VISIT))
+summary(model2)
+VIF(model2)
+```
+```{r}
+data$ERROR <- GROSS - predict(model2,data)
+name <- names(data[,3:22])
+c = cor(data[,name],use="complete.obs")
+c
+```
+
+```{r}
+model3 <- lm (GROSS~COLLPR+POVPR+PERCAPI+ REAGpr + CARTpr + ANDRpr+ POP80+ factor(VISIT))
+summary(model3)
+VIF(model3)
+```
+```{r}
+data$ERROR <- GROSS - predict(model3,data)
+name <- names(data[,3:25])
+c = cor(data[,name],use="complete.obs")
+c
+```
+
+
+```{r}
+detach(data)
+attach(data2)
+```
+
+```{r}
+data2$COLLPR <- data2$COLLPR * data2$POP80
+#data2$MFGPR <- data2$MFGPR * data2$POP80
+#data2$POVPR <- data2$POVPR * data2$POP80
+data2$Voter <- data2$CART +data2$REAG +data2$ANDR
+data2$CARTpr <- data2$CART/data2$POP80
+data2$REAGpr <- data2$REAG/data2$POP80
+data2$ANDRpr <- data2$ANDR/data2$POP80
+```
+
+```{r}
+data2$Predict <- predict(model3,data2)
+summary(data2$Predict)
+describe(data2$Predict)
+```
+
+
