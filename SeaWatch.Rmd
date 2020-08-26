@@ -108,7 +108,7 @@ c
 ```
 
 ```{r}
-model3 <- lm (GROSS~COLLPR+POVPR+PERCAPI+ CARTpr + ANDRpr+ POP80+ factor(VISIT))
+model3 <- lm (GROSS~COLLPR+POVPR+PERCAPI+ REAGpr + CARTpr + ANDRpr+ POP80+ factor(VISIT))
 summary(model3)
 VIF(model3)
 ```
@@ -140,5 +140,4 @@ data2$Predict <- predict(model3,data2)
 summary(data2$Predict)
 describe(data2$Predict)
 ```
-
 
